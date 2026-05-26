@@ -18,7 +18,7 @@ async function getData(params: { [key: string]: string | undefined }) {
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
   try {
     const [rows, countRes, totals] = await Promise.all([
-      dbQuery(`SELECT * FROM nastil ${where} ORDER BY sana DESC, id DESC LIMIT $${i} OFFSET $${i+1}`, [...values, limit, offset]),
+      dbQuery(`SELECT * FROM nastil ${where} ORDER BY sana DESC, id DESC LIMIT $${i} OFFSET $${i + 1}`, [...values, limit, offset]),
       dbQuery(`SELECT COUNT(*) as total FROM nastil ${where}`, values),
       dbQuery(`SELECT COALESCE(SUM(kroy_kilindi),0) as kesim, COALESCE(SUM(razdacha),0) as razdacha, COALESCE(SUM(ombor_qoldiq),0) as qoldiq FROM nastil ${where}`, values),
     ])
@@ -39,7 +39,22 @@ export default async function NastilPage({ searchParams }: { searchParams: Searc
   }
   const data = await getData(params)
   return (
-    <div style={{ padding: 20 }} className="space-y-4">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+    <div className="p-5 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700 }}>Nastil hisoboti</h1>
+          <h1 className="text-xl font-bold">Nastil hisoboti</h1>
+          <p className="text-xs mt-1" style={{color:'#8b949e'}}>
+            Jami: <strong>{data.total.toLocaleString()}</strong> qator
+          </p>
+        </div>
+        <div className="flex gap-3 flex-wrap items-center">
+          <div className="chip"><p>Kesim</p><p className="n-blue">{Number(data.totals.kesim).toLocaleString()}</p></div>
+          <div className="chip"><p>Razdacha</p><p className="n-green">{Number(data.totals.razdacha).toLocaleString()}</p></div>
+          <div className="chip"><p>Qoldi</p><p className="n-red">{Number(data.totals.qoldiq).toLocaleString()}</p></div>
+          <ExportButton table="nastil" params={Object.fromEntries(Object.entries(params).filter(([,v]) => v !== undefined) as [string,string][])} />
+        </div>
+      </div>
+      <NastilTable rows={data.rows} total={data.total} page={data.page} limit={data.limit} filters={params} />
+    </div>
+  )
+}
