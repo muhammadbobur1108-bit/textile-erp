@@ -43,18 +43,3 @@ export default async function NastilPage({ searchParams }: { searchParams: Searc
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700 }}>Nastil hisoboti</h1>
-          <p style={{ fontSize: 12, color: "#8b949e", marginTop: 4 }}>
-            Jami: <strong>{data.total.toLocaleString()}</strong> qator
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <div className="chip"><p>Kesim</p><p className="n-blue">{Number(data.totals.kesim).toLocaleString()}</p></div>
-          <div className="chip"><p>Razdacha</p><p className="n-green">{Number(data.totals.razdacha).toLocaleString()}</p></div>
-          <div className="chip"><p>Qoldi</p><p className="n-red">{Number(data.totals.qoldiq).toLocaleString()}</p></div>
-          <ExportButton table="nastil" params={{ ...(params.buyurtma ? { buyurtma: params.buyurtma } : {}), ...(params.rang ? { rang: params.rang } : {}) }} />
-        </div>
-      </div>
-      <NastilTable rows={data.rows} total={data.total} page={data.page} limit={data.limit} filters={params} />
-    </div>
-  )
-}
